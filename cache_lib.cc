@@ -14,21 +14,34 @@ class Cache::Impl {
         float max_load_factor = 0.75, 
         Evictor* evictor = nullptr,
         Cache::hash_func hasher = std::hash<key_type>()): maxmem_(maxmem), max_load_factor_(max_load_factor), evictor_(evictor), hasher_(hasher) {
-        // Do nothign yet 
+
+        map_.max_load_factor(max_load_factor);
+
+
     }
     ~Impl() {
         // Do nothing
     }
 
     void set(key_type key, Cache::val_type val, Cache::size_type size){
-        // Do nothing
+        // TODO: CHECK INPUT FOR SANITY
+
+    	// Deep copy &val to somewhere in memory
+    	// Take pointer to val and hash key to said pointer
+    	//SURE WOULD BE NICE IF WE USED A SMART POINTER HERE
+    	char* newValue = new char[size];	//REMEMBER TO DELETE ME AT THE END
+     	for(int i = 0; i < size; i++) {
+    		// No safety checking like bad boys TODO: ADD SAFETY CHECKING
+    		newValue[i] = val[i];
+    	}
+    	map_[key] = newValue;
     }
     Cache::val_type get(key_type key, Cache::size_type& val_size) const {
-        const char* retval = new char[5];
-        return retval;
+    	// Very short function eh?
+        return map_.at(key);
     }
     bool del(key_type key) {
-        return true;
+    	return map_.erase(key) > 0;
     }
     Cache::size_type space_used() const {
         return 42;
@@ -41,6 +54,8 @@ class Cache::Impl {
     float max_load_factor_;
     Evictor* evictor_;
     Cache::hash_func hasher_;
+    std::unordered_map<key_type, Cache::val_type> map_;
+
 
 
 };

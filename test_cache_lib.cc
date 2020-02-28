@@ -5,6 +5,7 @@
 #include "cache.hh"
 #include <assert.h>
 #include <string.h>
+#include <iostream>
 
 void test_cache_creation() {
     return;
@@ -24,6 +25,7 @@ void test_set_and_get() {
     test_cache.set("key1", charr1, 34);
     s = 34;
     const char* ret2 = test_cache.get("key1", s);
+    std::cout<<" DO YOU WEASADASDSD\n";
     assert(ret2 != nullptr);
     assert(strcmp(ret, ret2) != 0);
 }
@@ -40,6 +42,7 @@ void test_del() {
     uint32_t s = 42;
     assert(test_cache.get("key0", s) == nullptr);
     assert(test_cache.del("key0") == false);
+    std::cout<<" DO WE PASS DELETE???\n";
 }
 
 void test_space_used() {
