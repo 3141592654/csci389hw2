@@ -60,7 +60,9 @@ class Cache::Impl {
         return space_used_;
     }
     void reset() {
-        // Do nothing
+        map_.clear();
+        size_map_.clear();
+        space_used_ = 0;
     }
   private:
     Cache::size_type maxmem_;
