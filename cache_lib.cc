@@ -5,37 +5,46 @@
 #include <functional>
 #include <memory>
 #include "cache.hh"
-#include "evictor.hh"  //https://stackoverflow.com/questions/5319906/error-expected-class-name-before-token
-
 
 class Cache::Impl {
   public:
     Impl(Cache::size_type maxmem,
         float max_load_factor = 0.75, 
         Evictor* evictor = nullptr,
-        Cache::hash_func hasher = std::hash<key_type>()): maxmem_(maxmem), max_load_factor_(max_load_factor), evictor_(evictor), hasher_(hasher) {
+        Cache::hash_func hasher = std::hash<key_type>()): maxmem_(maxmem), max_load_factor_(max_load_factor), evictor_(evictor), hasher_(hasher), space_used_(0) {
         map_.max_load_factor(max_load_factor);
-	size_map_.max_load_factor(max_load_factor);
-        space_used_ = 0;  // I COULD HAVE SWORN THERE WAS A NICER WAY TO DO THIS IN THE PRIVATE VARIABLES SECTION
+        size_map_.max_load_factor(max_load_factor);
     }
     ~Impl() {
         // Do nothing
     }
-    void set(key_type key, Cache::val_type val, Cache::size_type size){
-        // TODO: CHECK INPUT FOR SANITY
-        // Deep copy &val to somewhere in memory
-        // Take pointer to val and hash key to said pointer
-        //SURE WOULD BE NICE IF WE USED A SMART POINTER HERE
-        std::shared_ptr<char[]> newValue(new char[size]);    //REMEMBER TO DELETE ME AT THE END
+    void set(key_type key, Cache::val_type val, Cache::size_type size) {
+        // Check for impossible requests
+        if (size > maxmem_) {
+            std::cerr << "The size of the array you have requested for '" 
+                      << str(key) << "', which is of " << str(size) 
+                      << ", is greater than this cache's maxmimum memory. "
+                      << "Such an array cannot be allocated.\n";
+            return;
+        }
+        // See if we need to evict things from the cache
+        if (size + space_used_ > maxmem_) {
+            // EVICT THINGS FROM CACHE
+            // Except we haven't implemented that yet, so
+            return;
+        }
+        // Deep copy size objects starting at 0xval to somewhere on the heap
+        std::shared_ptr<char[]> newValue(new char[size]);
         for(int i = 0; i < size; i++) {
-            // No safety checking like bad boys TODO: ADD SAFETY CHECKING
+            // Leave it up to the user to make sure this is legal.
             newValue[i] = val[i];
         }
         space_used_ += size;
-    	if (map_.count(key) == 1) {
-                // Remove the space allocated to whatever used to be there
-                space_used_ -= size_map_[key];
-    	}
+        if (map_.count(key) == 1) {
+            // Remove the space allocated to whatever used to be there
+            space_used_ -= size_map_[key];
+        }
+        // Take pointer to val and hash key to said pointer
         map_[key] = newValue;
         size_map_[key] = size;
     }
