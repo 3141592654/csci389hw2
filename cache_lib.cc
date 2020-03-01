@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <memory>
+#include <iostream>
 #include "cache.hh"
 
 class Cache::Impl {
@@ -22,7 +23,7 @@ class Cache::Impl {
         // Check for impossible requests
         if (size > maxmem_) {
             std::cerr << "The size of the array you have requested for '" 
-                      << str(key) << "', which is of " << str(size) 
+                      << key << "', which is of " << size
                       << ", is greater than this cache's maxmimum memory. "
                       << "Such an array cannot be allocated.\n";
             return;
