@@ -6,6 +6,7 @@
 #include <memory>
 #include <iostream>
 #include "cache.hh"
+#include <map>
 
 class Cache::Impl {
   public:
@@ -13,8 +14,8 @@ class Cache::Impl {
         float max_load_factor = 0.75, 
         Evictor* evictor = nullptr,
         Cache::hash_func hasher = std::hash<key_type>()): maxmem_(maxmem), max_load_factor_(max_load_factor), evictor_(evictor), hasher_(hasher), space_used_(0) {
-        map_.max_load_factor(max_load_factor);
-        size_map_.max_load_factor(max_load_factor);
+        //map_.max_load_factor(max_load_factor);
+        //size_map_.max_load_factor(max_load_factor);
     }
     ~Impl() {
         // Do nothing
@@ -79,8 +80,8 @@ class Cache::Impl {
     float max_load_factor_;
     Evictor* evictor_;
     Cache::hash_func hasher_;
-    std::unordered_map<key_type, std::shared_ptr<char[]>> map_;
-    std::unordered_map<key_type, Cache::size_type> size_map_;  // We hoped to have an unordered map to a cache_record struct. However, it was not to be.
+    std::map<key_type, std::shared_ptr<char[]>> map_;
+    std::map<key_type, Cache::size_type> size_map_;  // We hoped to have an unordered map to a cache_record struct. However, it was not to be.
     Cache::size_type space_used_;
 };
 
