@@ -7,10 +7,6 @@
 #include <string.h>
 #include <iostream>
 
-void test_cache_creation() {
-    return;
-}
-
 void test_set_and_get() {
     Cache test_cache(1024);
     char charr0[] = "the quick brown fox jumps over the lazy dog";
@@ -88,9 +84,8 @@ void test_reset() {
 int main() {
     // For all of these, we assume the previous tests are working properly.
     // This is a good assumption because otherwise assert would exit the program.
-    test_cache_creation();
-    // We decided against an explicit deletion test. We were not sure what
-    // we would put in it, and thought valgrind would be better at detecting
+    // We decided against an explicit creation/deletion test. We were not sure what
+    // we would put in them, and thought valgrind would be better at detecting
     // errors than we would ever be.
     test_set_and_get();
     test_del();
