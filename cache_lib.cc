@@ -26,16 +26,16 @@ class Cache::Impl {
         // Deep copy &val to somewhere in memory
         // Take pointer to val and hash key to said pointer
         //SURE WOULD BE NICE IF WE USED A SMART POINTER HERE
-        std::unique_ptr<char[]> newValue(new char[size]);    //REMEMBER TO DELETE ME AT THE END
+        std::shared_ptr<char[]> newValue(new char[size]);    //REMEMBER TO DELETE ME AT THE END
         for(int i = 0; i < size; i++) {
             // No safety checking like bad boys TODO: ADD SAFETY CHECKING
             newValue[i] = val[i];
         }
         space_used_ += size;
-	if (map_.count(key) == 1) {
-            // Remove the space allocated to whatever used to be there
-            space_used_ -= size_map_[key];
-	}
+    	if (map_.count(key) == 1) {
+                // Remove the space allocated to whatever used to be there
+                space_used_ -= size_map_[key];
+    	}
         map_[key] = newValue;
         size_map_[key] = size;
     }
@@ -44,7 +44,7 @@ class Cache::Impl {
         if (map_.count(key) == 0) {
             return nullptr;
         } else {
-            return map_.at(key);
+            return map_.at(key).get();
         }
     }
     bool del(key_type key) {
@@ -67,7 +67,7 @@ class Cache::Impl {
     float max_load_factor_;
     Evictor* evictor_;
     Cache::hash_func hasher_;
-    std::unordered_map<key_type, std::unique_ptr<char[]>> map_;
+    std::unordered_map<key_type, std::shared_ptr<char[]>> map_;
     std::unordered_map<key_type, Cache::size_type> size_map_;  // We hoped to have an unordered map to a cache_record struct. However, it was not to be.
     Cache::size_type space_used_;
 };
