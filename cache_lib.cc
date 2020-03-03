@@ -30,12 +30,20 @@ class Cache::Impl {
             return;
         }
         // See if we need to evict things from the cache
-        if (size + space_used_ > maxmem_) {
+        while (size + space_used_ > maxmem_) {
             // EVICT THINGS FROM CACHE
             // Except we haven't implemented that yet, so
-            return;
+	    if (evictor_ == nullptr) {
+                return;
+	    } else {
+                key_type key_to_evict = evictor_->evict();
+		del(key_to_evict);
+	    }
         }
-        // Deep copy size objects starting at 0xval to somewhere on the heap
+	if (evictor_ != nullptr) {
+            evictor_->touch_key(key);
+	}
+	// Deep copy size objects starting at 0xval to somewhere on the heap
         std::shared_ptr<char[]> newValue(new char[size]);
         for(int i = 0; i < size; i++) {
             // Leave it up to the user to make sure this is legal.
@@ -55,6 +63,9 @@ class Cache::Impl {
         if (map_.count(key) == 0) {
             return nullptr;
         } else {
+           if (evictor_ != nullptr) {
+               evictor_->touch_key(key);
+            }
             return map_.at(key).get();
         }
     }
