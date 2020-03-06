@@ -32,3 +32,5 @@ evict() pops and returns the oldest item in the queue.
 ## LRU Evictor Design
 
 We implemented the LRU evictor using a linked list and hash map that maps keys to nodes in the linked list. This gives us constant time access into the linked list. Touch moves a node to the back of the linked list.
+
+This LRU evictor uses a large number of runtime assertions to make sure it is working properly.
