@@ -1,6 +1,10 @@
 # CSCI 389 HW2: Hash It Out
 Mason Koch and Sebastian Simmons
 
+## Usage instructions
+
+Make the project using make. ./test_cache_lib tests everything (not just cache_lib).
+
 ## Style note
 
 The header files used an indenation of 2 spaces. We used an indentation of 4. 
