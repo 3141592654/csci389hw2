@@ -14,7 +14,7 @@ class Cache::Impl {
         float max_load_factor = 0.75, 
         Evictor* evictor = nullptr,
         Cache::hash_func hasher = std::hash<key_type>())
-        : maxmem_(maxmem), max_load_factor_(max_load_factor), evictor_(evictor), hasher_(hasher), space_used_(0), map_(-1,hasher_), size_map_(-1, hasher_) {
+        : maxmem_(maxmem), max_load_factor_(max_load_factor), evictor_(evictor), hasher_(hasher), map_(-1,hasher_), size_map_(-1, hasher_), space_used_(0) {
         // The first argument to map_ is the minimum number of buckets. -1 works. 0 works. -5 throws a bad alloc error. I settled with -1.
         // Not sure giving map_ and size_map_ the same hasher is a good idea.
         // Why can't we pass in the max load factor in the initialisation of our maps?
@@ -98,7 +98,7 @@ class Cache::Impl {
     Evictor* evictor_;
     Cache::hash_func hasher_;
     std::unordered_map<key_type, std::shared_ptr<char[]>, Cache::hash_func> map_;
-    std::unordered_map<key_type, Cache::size_type, Cache::hash_func> size_map_;  // We hoped to have an unordered map to a cache_record struct. However, it was not to be.
+    std::unordered_map<key_type, Cache::size_type, Cache::hash_func> size_map_; 
     Cache::size_type space_used_;
 };
 
