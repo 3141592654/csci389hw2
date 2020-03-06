@@ -9,8 +9,8 @@ Fifo_evictor::Fifo_evictor() {
     my_queue_ = std::queue<key_type>();
 }
 void Fifo_evictor::touch_key(const key_type& key) {
-    // First quick and dirty approach. Add it to the back of the queue.
-    // TODO: REORDER THE QUEUE IF THE KEY IS ALREADY IN IT.
+    // From part 6 of the prompt:
+    """ It's OK to have multiple copies of the same key in the FIFO queue"""
     my_queue_.push(key);
 }
 const key_type Fifo_evictor::evict() {
