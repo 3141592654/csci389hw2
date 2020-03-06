@@ -1,22 +1,18 @@
 /*
- * Implementation for Lru_evictor class
- * We do this by having a linked list of the keys. The top of the list is
- * the most recently used (or whatever). We also have a hashmap from the keys
- * to a pointer to the relevant node in the linked list. Then when we set a
- * previously used key, we can rearrange the linked list in constant time.
- *
- * Hmm, do we just implement our own linked list? It would be practice for every programming interview ever.
+ * Implementation for Lru_evictor class. We implement this by using a linked
+ * list of the keys. The head of the list is the least recently used key. The
+ * tail of the list is the most recently used key.
+ * We need to rearrange the list in constant time. To do this, we also have a hashmap from the keys
+ * to a pointer to the relevant node in the linked list.
  */
 
 #include "lru_evictor.hh"
 #include <assert.h>
 
+// Initialise an empty list and hash table
+Lru_evictor::Lru_evictor() : head_(nullptr), tail_(nullptr), pointer_lookup_() {}
 
-Lru_evictor::Lru_evictor() {
-    node* head_ = nullptr;
-    node* tail_ = nullptr;
-}  // TODO: IS THIS FUNCTION REDUNDANT???
-
+// Delete our list from the heap
 Lru_evictor::~Lru_evictor() {
     node* temp1 = head_;
     node* temp2 = nullptr;
@@ -59,7 +55,7 @@ void Lru_evictor::touch_key(const key_type& key) {
         // The key is in our index map
         node* ref = pointer_lookup_[key];
         // Add in a bunch of runtime assertions
-        assert(ref != nullptr);              // We should never point to a nullptr
+        assert(ref != nullptr);               // We should never point to a nullptr
         assert(head_ != nullptr);             // Our list should exist
         assert(head_->previous == nullptr);   // There shouldn't be anything older than the oldest element
         assert(tail_ != nullptr);             // Again, our list should exist
@@ -91,12 +87,16 @@ void Lru_evictor::touch_key(const key_type& key) {
 	tail_->next = nullptr;
     }
 }
+
 const key_type Lru_evictor::evict() {
+    // Check for empty list
     if (head_ == nullptr) {
         assert(tail_ == nullptr);
         return nullptr;
     }
+    // Assert list is not empty
     assert(tail_ != nullptr);
+    // Pop the head
     key_type retval = head_->payload;
     node* temp = head_->next;
     delete head_;
@@ -104,10 +104,11 @@ const key_type Lru_evictor::evict() {
     if (head_ != nullptr) {
         head_->previous = nullptr;
     } else {
+        // Our list is empty now, so
         tail_ = nullptr;
     }
+    // Clean up pointer lookup and return
     pointer_lookup_.erase(retval);
     return retval;
 }
-
 
