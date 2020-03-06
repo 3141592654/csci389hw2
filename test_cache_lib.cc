@@ -123,6 +123,27 @@ void test_lru_evictor_basic() {
     delete test_evictor;
 }
 
+void test_shared_pointer(){
+    Cache test_cache(1024);
+    char charr0[] = "the quick brown fox jumps over the lazy dog";
+    test_cache.set("key0", charr0, 44);
+    uint32_t s1 = 44;
+    const char* ret = test_cache.get("key0", s1);  
+    assert(ret != nullptr);
+    assert(strcmp(charr0, ret) == 0);
+    char charr1[] = "J Q Vandz struck my big fox whelp";
+    test_cache.set("key1", charr1, 34);
+    uint32_t s2 = 34;
+    const char* ret2 = test_cache.get("key1", s2);
+    assert(ret2 != nullptr);
+    test_cache.del("key0");
+    test_cache.del("key1");
+    assert(test_cache.space_used() == 0);
+    assert(ret != nullptr);     //Test that shared_pointers keep values after
+    assert(ret2 != nullptr);    // deletation from the cache
+    assert(strcmp(ret, ret2) != 0);
+}
+
 int main() {
     // For all of these, we assume the previous tests are working properly.
     // This is a good assumption because otherwise assert would exit the program.
@@ -136,5 +157,6 @@ int main() {
     // TODO: ADD MORE TESTS FOR THE OTHER PARTS
     test_fifo_evictor();
     test_lru_evictor_basic();
+    test_shared_pointer();
 }
 
