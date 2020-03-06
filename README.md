@@ -6,13 +6,13 @@ Mason Koch and Sebastian Simmons
 The header files used an indenation of 2 spaces. We used an indentation of 4. 
 
 ## Cache Design
-We decided to use an unordered_map container for the internal hash table of pointers to the stored values. We also used another unordered_map to keep track of the amount of memory used by each item added to the cache. We chose an unordered_map as it allowed us to handle collisions and dynamic resizing based on a load factor parameter through use of this container. unordered_map also has constant time access so that gave us the performance we wanted.
+We used two unordered maps, one for the hash table of pointers to the stored values and another to track the memory used by each item added to the cache. We used unordered_maps because they handle collisions, dynamic resizing based on a load factor and constant time access for us.
 
-The map of values hashes keys to a shared_pointer to the value. This allows map.clear() to automatically handle the memory requested by the cache since a shared pointer will deallocate memory once no more pointers point to that object. While it is up the end user to deep copy the resulting value from get(), using a shared_pointer means that if the user keeps the pointer we returned and the pointer is deleted from the cache, the value stays in memory until the user releases that pointer.
+The unordered_map of values hashes keys to a shared_pointer to the value. This allows map.clear() to automatically handle the memory requested by the cache since a shared pointer will deallocate memory once no more pointers point to that object. While it is up the end user to deep copy the resulting value from get(), using a shared_pointer means that if the user keeps the pointer we returned and the pointer is deleted from the cache, the value stays in memory until the user releases that pointer. This is not necessary, but it is certainly more user-friendly.
 
-Another map hashes the key the size of the stored value. This allows us to keep track of memory as items are added or deleted.
+Another unordered_map hashes the key the size of the stored value. This allows us to keep track of memory as items are added or deleted.
 
-For set() we created a while loop that will evict until enough memory is free to add a new item. Before that we implemented a sanity check that ensures the size of val does not exceed our maximum allowed memory. If there is no evictor object given, the cache does not accept new values.
+For set(), we check if the user's data is bigger than our cache's maxmem and tell them to jump in a lake if it is. Otherwise, we run a while loop that will evict until enough memory is free to add the new item. If there is no evictor object given, the cache does not accept new values.
 
 ## FIFO Evictor Design
 We used a queue of keys to store which items were first in. 
@@ -23,6 +23,4 @@ evict() pops and returns the oldest item in the queue.
 
 ## LRU Evictor Design
 
-We implemented the LRU evictor using a linked list and hash map that maps keys to nodes in the linked list. Touch moves a node to the back of the linked list.
-
-
+We implemented the LRU evictor using a linked list and hash map that maps keys to nodes in the linked list. This gives us constant time access into the linked list. Touch moves a node to the back of the linked list.
