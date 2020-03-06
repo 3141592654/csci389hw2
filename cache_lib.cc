@@ -34,10 +34,15 @@ class Cache::Impl {
                       << "Such an array cannot be allocated.\n";
             return;
         }
+	// Handle the edge case where we don't have enough memory without evicting
+	// the previous value first, but we do if we do
+        if (map_.count(key) != 0) {
+            del(key);
+	}
         // See if we need to evict things from the cache
         while (size + space_used_ > maxmem_) {
             // From part 6 of the prompt:
-            //"""O. A Cache() constructor accepts an Evictor* parameter. If it's nullptr, the cache simply doesn't replace old items and disallows insertions that exceed maxmem"""
+            //"""A Cache() constructor accepts an Evictor* parameter. If it's nullptr, the cache simply doesn't replace old items and disallows insertions that exceed maxmem"""
             if (evictor_ == nullptr) {
                 return;
             } else {

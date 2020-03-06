@@ -44,7 +44,7 @@ void test_del() {
 void test_space_used() {
     Cache test_cache(1024);
     assert(test_cache.space_used() == 0);
-    char charr0[] = "the quick brown fox jumps over the lazy dog";  // If I recall we can do this. It would be a good thing to check.
+    char charr0[] = "the quick brown fox jumps over the lazy dog";
     test_cache.set("key0", charr0, 44);      // Include the null terminator in all sizes.
     assert(test_cache.space_used() == 44);
     // Make sure we do a deep copy by ending the string early
@@ -104,7 +104,7 @@ void test_fifo_evictor() {
 }
 
 void test_lru_evictor_basic() {
-    Lru_evictor* test_evictor = new Lru_evictor();
+    Lru_evictor* test_evictor = new Lru_evictor();  // A fun exercise for the reader: replace this with a Fifo_evictor and watch it fail.
     Cache test_cache(1024, 0.75, test_evictor);
     char charr0[] = "In this assignment, you will write a generic look-aside cache. A look-aside cache is a key-valueSTOPstorage for items that are difficult or slow to compute. Whenever a client code requires such anSTOPitem, it first queries the cache for the desired key. If the cache has it, it returns the associatedSTOPvalue. If it doesn't, the client obtains the value on its own (presumably through a slower process),STOPand then saves it to the cache for future references. If the data access patterns exhibit temporalSTOPlocality, the use of the cache will end up being beneficial and faster than always computing theSTOPvalues. Your job will be to implement the cache. In C++, write a cache_lib.cc file to complementSTOP";
     test_cache.set("key0", charr0, 712);
@@ -121,6 +121,15 @@ void test_lru_evictor_basic() {
     s = 297;
     assert(test_cache.get("key2", s) != nullptr);
     assert(test_cache.space_used() == 499+297);
+    s = 499;
+    // Now add some tests which FIFO will not pass.
+    char charr3[] = "the quick brown fox jumps over the lazy dog";
+    test_cache.set("key1", charr3, 44);
+    assert(test_cache.space_used() == 44+297);
+    test_cache.get("key1",s);
+    test_cache.set("key0", charr0, 712);
+    assert(test_cache.get("key2", s) == nullptr);
+    assert(test_cache.get("key1", s) != nullptr);
     delete test_evictor;
 }
 
