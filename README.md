@@ -14,7 +14,7 @@ The header files used an indenation of 2 spaces. We used an indentation of 4.
 ## Cache Design
 We used two unordered maps, one for the hash table of pointers to the stored values and another to track the memory used by each item added to the cache. We used unordered_maps because they handle collisions, dynamic resizing based on a load factor and constant time access for us.
 
-The unordered_map of values hashes keys to a shared_pointer to the value. This allows map.clear() to automatically handle the memory requested by the cache since a shared pointer will deallocate memory once no more pointers point to that object. While it is up the end user to deep copy the resulting value from get(), using a shared_pointer means that if the user keeps the pointer we returned and the pointer is deleted from the cache, the value stays in memory until the user releases that pointer. This is not necessary, but it is certainly more user-friendly.
+The unordered_map of values hashes keys to a shared_pointer to the value. This allows map.clear() to automatically handle the memory requested by the cache since a shared pointer will deallocate memory once no more pointers point to that object. The original idea was that if the end user kept a pointer to the value they had around and that pointer was deleted from the cache, it wouldn't change on them. Sadly this didn't happen.
 
 Another unordered_map hashes the key the size of the stored value. This allows us to keep track of memory as items are added or deleted.
 
