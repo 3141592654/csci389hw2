@@ -51,7 +51,7 @@ class Cache::Impl {
         }
         // Deep copy size objects starting at 0xval to somewhere on the heap
         std::shared_ptr<char[]> newValue(new char[size]);
-        for(int i = 0; i < size; i++) {
+        for(unsigned i = 0; i < size; i++) {
             // Leave it up to the user to make sure this is legal.
             newValue[i] = val[i];
         }
