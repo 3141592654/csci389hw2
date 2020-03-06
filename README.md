@@ -11,6 +11,8 @@ Make the project using make.
 
 The header files used an indenation of 2 spaces. We used an indentation of 4. 
 
+The cache compiles with an unused parameter warning in cache.get(). This is because our implementation does not need the val_size argument from the header file. We compiled without -Werror because the function otherwise does what it is supposed to do.
+
 ## Cache Design
 We used two unordered maps, one for the hash table of pointers to the stored values and another to track the memory used by each item added to the cache. We used unordered_maps because they handle collisions, dynamic resizing based on a load factor and constant time access for us.
 
