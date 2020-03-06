@@ -3,7 +3,9 @@ Mason Koch and Sebastian Simmons
 
 ## Usage instructions
 
-Make the project using make. ./test_cache_lib tests everything (not just cache_lib).
+Make the project using make.
+
+./test_cache_lib tests everything (not just cache_lib).
 
 ## Style note
 
