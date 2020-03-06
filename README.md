@@ -3,7 +3,7 @@ Mason Koch and Sebastian Simmons
 
 ## Style note
 
-The header files used an indenation of 2 and we used an indentation of 4 for our implementation. 
+The header files used an indenation of 2 spaces. We used an indentation of 4. 
 
 ## Cache Design
 We decided to use an unordered_map container for the internal hash table of pointers to the stored values. We also used another unordered_map to keep track of the amount of memory used by each item added to the cache. 
