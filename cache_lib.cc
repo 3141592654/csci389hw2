@@ -37,7 +37,7 @@ class Cache::Impl {
         // See if we need to evict things from the cache
         while (size + space_used_ > maxmem_) {
             // From part 6 of the prompt:
-            """O. A Cache() constructor accepts an Evictor* parameter. If it's nullptr, the cache simply doesn't replace old items and disallows insertions that exceed maxmem""
+            //"""O. A Cache() constructor accepts an Evictor* parameter. If it's nullptr, the cache simply doesn't replace old items and disallows insertions that exceed maxmem"""
             if (evictor_ == nullptr) {
                 return;
             } else {
